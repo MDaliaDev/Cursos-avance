@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Animaciones Lottie</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.2/lottie.min.js"></script>
+</head>
+<body>
+
+  <h1 class="page-title">Actuadores de simple efecto</h1>
+
+  <div class="container">
+    <div id="lottie1" class="lottie-box"></div>
+    <div id="lottie2" class="lottie-box"></div>
+  </div>
+
+  <script>
+    lottie.loadAnimation({
+      container: document.getElementById('lottie1'),
+      renderer: 'svg',
+      loop: false,
+      autoplay: true,
+      path: 'Neumatica-1.json'
+    });
+
+    lottie.loadAnimation({
+      container: document.getElementById('lottie2'),
+      renderer: 'svg',
+      loop: false,
+      autoplay: true,
+      path: 'Neumatica-2.json'
+    });
+  </script>
+
+</body>
+</html>
