@@ -4,33 +4,88 @@
   <meta charset="UTF-8">
   <title>Animaciones Lottie</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Font Awesome para iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.2/lottie.min.js"></script>
 </head>
 <body>
 
-  <h1 class="page-title">Actuadores de simple efecto</h1>
+  <div class="card-container fade-in">
+    <div class="card" id="flipCard">
 
-  <div class="container">
-    <div id="lottie1" class="lottie-box"></div>
-    <div id="lottie2" class="lottie-box"></div>
+      <!-- Anverso -->
+      <div class="card-face card-front">
+        <h1 class="page-title">Actuadores de simple efecto</h1>
+        <p>Los actuadores neumáticos de simple efecto utilizan aire comprimido para moverse en una dirección, y un resorte para regresar. Son comunes en aplicaciones donde se requiere un solo movimiento controlado.</p>
+        <button class="next-button" id="siguienteBtn"><i class="fas fa-arrow-right"></i> Siguiente</button>
+      </div>
+
+      <!-- Reverso -->
+      <div class="card-face card-back">
+        <div class="container">
+          <div class="animation-wrapper">
+            <div id="lottie1" class="lottie-box"></div>
+            <div class="controls">
+              <button onclick="playAnim(anim1)"><i class="fas fa-play"></i></button>
+              <button onclick="pauseAnim(anim1)"><i class="fas fa-pause"></i></button>
+              <button onclick="stopAnim(anim1)"><i class="fas fa-rotate-left"></i></button>
+            </div>
+          </div>
+          <div class="animation-wrapper">
+            <div id="lottie2" class="lottie-box"></div>
+            <div class="controls">
+              <button onclick="playAnim(anim2)"><i class="fas fa-play"></i></button>
+              <button onclick="pauseAnim(anim2)"><i class="fas fa-pause"></i></button>
+              <button onclick="stopAnim(anim2)"><i class="fas fa-rotate-left"></i></button>
+            </div>
+          </div>
+        </div>
+        <button class="next-button" id="volverBtn"><i class="fas fa-arrow-left"></i> Volver</button>
+      </div>
+
+    </div>
   </div>
 
   <script>
-    lottie.loadAnimation({
+    const flipCard = document.getElementById('flipCard');
+    const siguienteBtn = document.getElementById('siguienteBtn');
+    const volverBtn = document.getElementById('volverBtn');
+
+    siguienteBtn.addEventListener('click', () => {
+      flipCard.classList.add('flipped');
+    });
+
+    volverBtn.addEventListener('click', () => {
+      flipCard.classList.remove('flipped');
+    });
+
+    const anim1 = lottie.loadAnimation({
       container: document.getElementById('lottie1'),
       renderer: 'svg',
       loop: false,
-      autoplay: true,
+      autoplay: false,
       path: 'Neumatica-1.json'
     });
 
-    lottie.loadAnimation({
+    const anim2 = lottie.loadAnimation({
       container: document.getElementById('lottie2'),
       renderer: 'svg',
       loop: false,
-      autoplay: true,
+      autoplay: false,
       path: 'Neumatica-2.json'
     });
+
+    function playAnim(anim) {
+      anim.play();
+    }
+
+    function pauseAnim(anim) {
+      anim.pause();
+    }
+
+    function stopAnim(anim) {
+      anim.stop();
+    }
   </script>
 
 </body>
