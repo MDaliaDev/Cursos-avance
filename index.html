@@ -1,92 +1,81 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Animaciones Lottie</title>
-  <link rel="stylesheet" href="style.css">
-  <!-- Font Awesome para iconos -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.10.2/lottie.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/index.css">
+    <script src="js/courseConfig.js"></script>
 </head>
+
 <body>
-
-  <div class="card-container fade-in">
-    <div class="card" id="flipCard">
-
-      <!-- Anverso -->
-      <div class="card-face card-front">
-        <h1 class="page-title">Actuadores de simple efecto</h1>
-        <p>Los actuadores neumáticos de simple efecto utilizan aire comprimido para moverse en una dirección, y un resorte para regresar. Son comunes en aplicaciones donde se requiere un solo movimiento controlado.</p>
-        <button class="next-button" id="siguienteBtn"><i class="fas fa-arrow-right"></i> Siguiente</button>
-      </div>
-
-      <!-- Reverso -->
-      <div class="card-face card-back">
-        <div class="container">
-          <div class="animation-wrapper">
-            <div id="lottie1" class="lottie-box"></div>
-            <div class="controls">
-              <button onclick="playAnim(anim1)"><i class="fas fa-play"></i></button>
-              <button onclick="pauseAnim(anim1)"><i class="fas fa-pause"></i></button>
-              <button onclick="stopAnim(anim1)"><i class="fas fa-rotate-left"></i></button>
-            </div>
-          </div>
-          <div class="animation-wrapper">
-            <div id="lottie2" class="lottie-box"></div>
-            <div class="controls">
-              <button onclick="playAnim(anim2)"><i class="fas fa-play"></i></button>
-              <button onclick="pauseAnim(anim2)"><i class="fas fa-pause"></i></button>
-              <button onclick="stopAnim(anim2)"><i class="fas fa-rotate-left"></i></button>
-            </div>
-          </div>
-        </div>
-        <button class="next-button" id="volverBtn"><i class="fas fa-arrow-left"></i> Volver</button>
-      </div>
-
+    <div class="background-container">
+        <img id="background_image" src="" alt="Fondo" class="background-image">
     </div>
-  </div>
+    <img id="logo" src="" alt="Logo" class="logo">
 
-  <script>
-    const flipCard = document.getElementById('flipCard');
-    const siguienteBtn = document.getElementById('siguienteBtn');
-    const volverBtn = document.getElementById('volverBtn');
+    <audio id="bgAudio" preload="auto">
+        <source src="assets/audio/audio1.mp3" type="audio/mp3">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
 
-    siguienteBtn.addEventListener('click', () => {
-      flipCard.classList.add('flipped');
-    });
+    <main class="content">
+        <h3 class="welcome-text">Bienvenido a </h3>
+        <h1 id="title_course"></h1>
+        <button id="btnModulos" class="start-button"
+            onclick="document.querySelector('.container').scrollIntoView({behavior: 'smooth'})">
+            Comenzar
+            <span class="arrow">❯</span>
+        </button>
+    </main>
 
-    volverBtn.addEventListener('click', () => {
-      flipCard.classList.remove('flipped');
-    });
+    <div class="container">
+        <div class="learning-objectives">
+            <h2 class="section-title gradient-text">Logros de Aprendizaje</h2>
+            <p class="objectives-text">
+                Identificar la forma correcta de mantenimiento de rodamientos de agujero cónico 
+            </p>
+        </div>
+        <div class="modules-container">
+            <div class="module-card hover-borde" onclick="cambiarModulo('views/M1_pagina1.html')" data-module="1">
+                <div class="module-number">01</div>
+                <div class="card-content">
+                    <h3 class="module-title">Características de rodamientos                    </h3>
+                    <p class="module-description"></p>
+                </div>
+            </div>
+            <div class="module-card hover-borde"  onclick="cambiarModulo('views/M2_interactivo2.html')" data-module="2">
+                <div class="module-number">02</div>
+                <div class="card-content">
+                    <h3 class="module-title">Formas de montaje de rodamientos de agujero cónico                    </h3>
+                    <p class="module-description"></p>
+                </div>
+            </div>
+            <div class="module-card hover-borde" data-module="3">
+                <div class="module-number">03</div>
+                <div class="card-content">
+                    <h3 class="module-title">Desmontaje de rodamientos con tuerca hidráulica</h3>
+                    <p class="module-description"></p>
+                </div>
+            </div>
+            <div class="module-card hover-borde"  data-module="4">
+                <div class="module-number">04</div>
+                <div class="card-content">
+                    <h3 class="module-title">Montaje de rodamientos con tuerca hidráulica</h3>
+                    <p class="module-description"></p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    const anim1 = lottie.loadAnimation({
-      container: document.getElementById('lottie1'),
-      renderer: 'svg',
-      loop: false,
-      autoplay: false,
-      path: 'Neumatica-1.json'
-    });
-
-    const anim2 = lottie.loadAnimation({
-      container: document.getElementById('lottie2'),
-      renderer: 'svg',
-      loop: false,
-      autoplay: false,
-      path: 'Neumatica-2.json'
-    });
-
-    function playAnim(anim) {
-      anim.play();
-    }
-
-    function pauseAnim(anim) {
-      anim.pause();
-    }
-
-    function stopAnim(anim) {
-      anim.stop();
-    }
-  </script>
-
+    <script src="js/audioController.js"></script>
+    <script src="js/navigation.js"></script>
+    <script>
+        function cambiarModulo(modulo) {
+            window.location.href = modulo;
+        }
+    </script>
 </body>
+
 </html>

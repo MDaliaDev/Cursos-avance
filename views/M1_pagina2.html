@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rodamientos de Agujero Cónico - AngloAmerican</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        body {
+            background: white;
+            color: var(--color-gris);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin: 60px 0;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #38ef7d, #11998e, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+
+        /* 3D Bearing Visualizer */
+        .bearing-3d-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 60px 0;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease 0.5s forwards;
+        }
+
+        .bearing-3d-viewer {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+            position: relative;
+            min-height: 400px;
+        }
+
+        .bearing-3d {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+            cursor: grab;
+        }
+
+        .bearing-3d:active {
+            cursor: grabbing;
+        }
+
+        .bearing-outer {
+            width: 200px;
+            height: 200px;
+            border: 8px solid #38ef7d;
+            border-radius: 50%;
+            position: absolute;
+            background: linear-gradient(45deg, rgba(56, 239, 125, 0.3), rgba(17, 153, 142, 0.3));
+        }
+
+        .bearing-inner {
+            width: 120px;
+            height: 120px;
+            border: 6px solid #11998e;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        .bearing-cone {
+            width: 0;
+            height: 0;
+            border-left: 60px solid transparent;
+            border-right: 60px solid transparent;
+            border-bottom: 100px solid rgba(56, 239, 125, 0.6);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .bearing-cone.active {
+            opacity: 1;
+        }
+
+        /* Conicity Selector */
+        .conicity-selector {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .conicity-btn {
+            background: linear-gradient(45deg, #38ef7d, #11998e);
+            border: none;
+            border-radius: 15px;
+            padding: 15px 30px;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .conicity-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(56, 239, 125, 0.4);
+        }
+
+        .conicity-btn.active {
+            background: linear-gradient(45deg, #11998e, #38ef7d);
+            transform: scale(1.05);
+        }
+
+        .conicity-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease;
+        }
+
+        .conicity-btn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Radial Clearance Section */
+        .radial-clearance {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 60px 0;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease 1s forwards;
+        }
+
+        .clearance-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .clearance-header h2 {
+            color: #38ef7d;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        /* Temperature Simulator */
+        .temperature-simulator {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            margin: 40px 0;
+        }
+
+        .temp-controls {
+            text-align: center;
+        }
+
+        .temp-slider-container {
+            margin: 30px 0;
+        }
+
+        .temp-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #4fc3f7 0%, #ffeb3b 50%, #f44336 100%);
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        .temp-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #38ef7d;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .temp-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #38ef7d;
+            cursor: pointer;
+        }
+
+        .temp-display {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #38ef7d;
+            margin: 20px 0;
+        }
+
+        .temp-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        /* Bearing Animation Container */
+        .bearing-animation {
+            text-align: center;
+            position: relative;
+        }
+
+        .animated-bearing {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+            position: relative;
+            border: 6px solid #38ef7d;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(56, 239, 125, 0.3), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .bearing-inner-ring {
+            width: 80px;
+            height: 80px;
+            border: 4px solid #11998e;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.5s ease;
+        }
+
+        .clearance-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            border: 2px dashed rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            transition: all 0.5s ease;
+        }
+
+        /* Clearance Calculator */
+        .clearance-calculator {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 60px 0;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease 1.5s forwards;
+        }
+
+        .calculator-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .calculator-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .input-group {
+            text-align: center;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #38ef7d;
+            font-weight: bold;
+        }
+
+        .diameter-input {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid #38ef7d;
+            border-radius: 10px;
+            padding: 15px 20px;
+            color: var(--color-gris);
+            font-size: 1.2rem;
+            text-align: center;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .diameter-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .clearance-select {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid #38ef7d;
+            border-radius: 10px;
+            padding: 15px 20px;
+            color: var(--color-gris);
+            font-size: 1.2rem;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .clearance-select option {
+            background: #2d1b69;
+            color: white;
+        }
+
+        .calculate-clearance-btn {
+            background: linear-gradient(45deg, #38ef7d, #11998e);
+            border: none;
+            border-radius: 15px;
+            padding: 15px 40px;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 30px auto;
+            display: block;
+        }
+
+        .calculate-clearance-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(56, 239, 125, 0.4);
+        }
+
+        /* Results Display */
+        .clearance-results {
+            margin-top: 40px;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .clearance-results.show {
+            opacity: 1;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .result-card {
+            background: rgba(56, 239, 125, 0.2);
+            border: 2px solid #38ef7d;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #38ef7d;
+            margin: 10px 0;
+        }
+
+        .result-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Interactive Table */
+        .clearance-table {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 60px 0;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease 2s forwards;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        th,
+        td {
+            padding: 12px 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        th {
+            background: linear-gradient(45deg, #38ef7d, #11998e);
+            color: white;
+            font-weight: bold;
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        tbody tr:hover {
+            background: rgba(56, 239, 125, 0.2);
+            transform: scale(1.02);
+        }
+
+        .highlight-row {
+            background: rgba(56, 239, 125, 0.3) !important;
+            border: 2px solid #38ef7d !important;
+        }
+
+        /* Search and Filter */
+        .table-controls {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid #38ef7d;
+            border-radius: 10px;
+            padding: 10px 15px;
+            color: var(--color-gris);
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .temperature-simulator {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .calculator-inputs {
+                grid-template-columns: 1fr;
+            }
+
+            .conicity-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .table-controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1>Rodamientos de Agujero Cónico</h1>
+            <p>Los rodamientos de agujero cónico son fabricados comúnmente cuando son de tipo de rodillos a
+                rótula, KARB, y bolas a rótula</p>
+        </div>
+
+        <!-- 3D Bearing Visualizer -->
+        <div class="bearing-3d-container">
+            <div class="bearing-3d-viewer">
+
+                <div class="bearing-3d" id="bearing3D">
+                    <div class="bearing-outer"></div>
+                    <div class="bearing-inner"></div>
+                    <div class="bearing-cone" id="bearingCone"></div>
+                </div>
+
+                <p>Explora las diferencias entre conicidades K y K30</p>
+
+                <div class="conicity-selector">
+                    <button class="conicity-btn active" data-type="k">
+                        K - Conicidad 1:12
+                    </button>
+                    <button class="conicity-btn" data-type="k30">
+                        K30 - Conicidad 1:30
+                    </button>
+                </div>
+
+                <div id="conicityInfo">
+                    <h3>Conicidad K (1:12)</h3>
+                    <p>La conicidad estándar más común en rodamientos de rodillos a rótula y bolas a rótula. Proporciona
+                        un ajuste firme y fácil montaje.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Radial Clearance Section -->
+        <div class="radial-clearance">
+            <div class="clearance-header">
+                <h2>🌡️ Juego Radial</h2>
+                <p>Es la distancia que puede moverse el aro interior respecto al exterior en dirección perpendicular al
+                    eje. Es crucial para compensar expansión térmica y desalineaciones, asegurando el buen
+                    funcionamiento del rodamiento.</p>
+                <p>A continuación se presenta un simulador que representa el cambio del Juego Radial según la
+                    temperatura.
+                    El juego radial es representado por un aro interior que se mueve dentro de un aro exterior.
+                </p>
+            </div>
+
+            <div class="temperature-simulator">
+                <div class="temp-controls">
+                    <h3>Control de Temperatura</h3>
+                    <div class="temp-slider-container">
+                        <input type="range" class="temp-slider" id="tempSlider" min="20" max="200" value="70" step="5">
+                        <div class="temp-labels">
+                            <span>20°C</span>
+                            <span>110°C</span>
+                            <span>200°C</span>
+                        </div>
+                    </div>
+                    <div class="temp-display" id="tempDisplay">70°C</div>
+                    <p id="tempEffect">Temperatura de operación normal</p>
+                </div>
+
+                <div class="bearing-animation">
+                    <h3>Efecto en el Rodamiento</h3>
+                    <div class="animated-bearing" id="animatedBearing">
+                        <div class="bearing-inner-ring" id="innerRing"></div>
+                        <div class="clearance-indicator" id="clearanceIndicator"></div>
+                    </div>
+                    <p id="clearanceEffect">Juego radial: Normal</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clearance Calculator -->
+        <div class="clearance-calculator">
+            <div class="calculator-header">
+                <h2>🔍 Calculadora de Juego Radial</h2>
+                <p>Calcula el juego radial según el diámetro y tipo requerido</p>
+            </div>
+
+            <div class="calculator-inputs">
+                <div class="input-group">
+                    <label for="bearingDiameter">Diámetro del Agujero (mm)</label>
+                    <input type="number" class="diameter-input" id="bearingDiameter" placeholder="Ej: 100" min="24"
+                        max="1000">
+                </div>
+
+                <div class="input-group">
+                    <label for="clearanceType">Tipo de Juego Radial</label>
+                    <select class="clearance-select" id="clearanceType">
+                        <option value="c2">C2 - Menor que normal</option>
+                        <option value="normal" selected>Normal</option>
+                        <option value="c3">C3 - Mayor que normal</option>
+                        <option value="c4">C4 - Mayor que C3</option>
+                        <option value="c5">C5 - Mayor que C4</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="calculate-clearance-btn" onclick="calculateClearance()">
+                Calcular Juego Radial
+            </button>
+
+            <div class="clearance-results" id="clearanceResults">
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-value" id="minClearance">-- μm</div>
+                        <div class="result-label">Mínimo</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="maxClearance">-- μm</div>
+                        <div class="result-label">Máximo</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-value" id="avgClearance">-- μm</div>
+                        <div class="result-label">Promedio</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Clearance Table -->
+        <div class="clearance-table">
+            <h2>📊 Tabla Interactiva de Juego Radial</h2>
+            <p>Dependiendo de la aplicación el juego radial puede variar, este el identificado por la letra C.</p>
+            <p> En caso el rodamiento no cuente con ninguna designación “C”, se debe considerar valores de
+                juego radial “Normal”.</p>
+            <p> El juego radial servirá para verificar el correcto estado del rodamiento y calcular el juego radial
+                después del montaje.
+            </p>
+            <p>Busca y explora los valores de juego radial por diámetro</p>
+
+            <div class="table-controls">
+                <input type="text" class="search-input" id="tableSearch" placeholder="Buscar por diámetro...">
+            </div>
+
+            <div class="table-container">
+                <table id="clearanceTable">
+                    <thead>
+                        <tr>
+                            <th>Diámetro (mm)</th>
+                            <th>C2 Min (μm)</th>
+                            <th>C2 Max (μm)</th>
+                            <th>Normal Min (μm)</th>
+                            <th>Normal Max (μm)</th>
+                            <th>C3 Min (μm)</th>
+                            <th>C3 Max (μm)</th>
+                            <th>C4 Min (μm)</th>
+                            <th>C4 Max (μm)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Data will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Clearance data based on the document
+        const clearanceData = [
+            { diameter: 30, c2Min: 20, c2Max: 30, normalMin: 30, normalMax: 40, c3Min: 40, c3Max: 55, c4Min: 55, c4Max: 75 },
+            { diameter: 40, c2Min: 25, c2Max: 35, normalMin: 35, normalMax: 50, c3Min: 50, c3Max: 65, c4Min: 65, c4Max: 85 },
+            { diameter: 50, c2Min: 30, c2Max: 45, normalMin: 45, normalMax: 60, c3Min: 60, c3Max: 80, c4Min: 80, c4Max: 100 },
+            { diameter: 65, c2Min: 40, c2Max: 55, normalMin: 55, normalMax: 75, c3Min: 75, c3Max: 95, c4Min: 95, c4Max: 120 },
+            { diameter: 80, c2Min: 50, c2Max: 70, normalMin: 70, normalMax: 95, c3Min: 95, c3Max: 120, c4Min: 120, c4Max: 150 },
+            { diameter: 100, c2Min: 55, c2Max: 80, normalMin: 80, normalMax: 110, c3Min: 110, c3Max: 140, c4Min: 140, c4Max: 180 },
+            { diameter: 120, c2Min: 65, c2Max: 100, normalMin: 100, normalMax: 135, c3Min: 135, c3Max: 170, c4Min: 170, c4Max: 220 },
+            { diameter: 140, c2Min: 80, c2Max: 120, normalMin: 120, normalMax: 160, c3Min: 160, c3Max: 200, c4Min: 200, c4Max: 260 },
+            { diameter: 160, c2Min: 90, c2Max: 130, normalMin: 130, normalMax: 180, c3Min: 180, c3Max: 230, c4Min: 230, c4Max: 300 },
+            { diameter: 180, c2Min: 100, c2Max: 140, normalMin: 140, normalMax: 200, c3Min: 200, c3Max: 260, c4Min: 260, c4Max: 340 },
+            { diameter: 200, c2Min: 110, c2Max: 160, normalMin: 160, normalMax: 220, c3Min: 220, c3Max: 290, c4Min: 290, c4Max: 370 },
+            { diameter: 280, c2Min: 120, c2Max: 180, normalMin: 180, normalMax: 250, c3Min: 250, c3Max: 320, c4Min: 320, c4Max: 410 },
+            { diameter: 315, c2Min: 140, c2Max: 200, normalMin: 200, normalMax: 270, c3Min: 270, c3Max: 350, c4Min: 350, c4Max: 450 },
+            { diameter: 355, c2Min: 150, c2Max: 220, normalMin: 220, normalMax: 300, c3Min: 300, c3Max: 390, c4Min: 390, c4Max: 490 },
+            { diameter: 400, c2Min: 170, c2Max: 240, normalMin: 240, normalMax: 330, c3Min: 330, c3Max: 430, c4Min: 430, c4Max: 540 },
+            { diameter: 450, c2Min: 210, c2Max: 300, normalMin: 300, normalMax: 400, c3Min: 400, c3Max: 520, c4Min: 520, c4Max: 650 },
+            { diameter: 500, c2Min: 230, c2Max: 330, normalMin: 330, normalMax: 440, c3Min: 440, c3Max: 570, c4Min: 570, c4Max: 720 },
+            { diameter: 560, c2Min: 260, c2Max: 370, normalMin: 370, normalMax: 490, c3Min: 490, c3Max: 630, c4Min: 630, c4Max: 790 }
+        ];
+
+        // Initialize 3D bearing interaction
+        let currentRotationX = 0;
+        let currentRotationY = 0;
+        let isDragging = false;
+
+        const bearing3D = document.getElementById('bearing3D');
+        const bearingCone = document.getElementById('bearingCone');
+        const conicityInfo = document.getElementById('conicityInfo');
+
+        // Mouse/touch events for 3D rotation
+        bearing3D.addEventListener('mousedown', startDragging);
+        bearing3D.addEventListener('touchstart', startDragging);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('touchmove', drag);
+        document.addEventListener('mouseup', stopDragging);
+        document.addEventListener('touchend', stopDragging);
+
+        function startDragging(e) {
+            isDragging = true;
+            bearing3D.style.cursor = 'grabbing';
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+
+            const deltaX = e.movementX || 0;
+            const deltaY = e.movementY || 0;
+
+            currentRotationY += deltaX * 0.5;
+            currentRotationX -= deltaY * 0.5;
+
+            bearing3D.style.transform = `rotateX(${currentRotationX}deg) rotateY(${currentRotationY}deg)`;
+        }
+
+        function stopDragging() {
+            isDragging = false;
+            bearing3D.style.cursor = 'grab';
+        }
+
+        // Conicity selector functionality
+        const conicityBtns = document.querySelectorAll('.conicity-btn');
+
+        conicityBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons
+                conicityBtns.forEach(b => b.classList.remove('active'));
+
+                // Add active class to clicked button
+                btn.classList.add('active');
+
+                const type = btn.dataset.type;
+
+                if (type === 'k') {
+                    bearingCone.style.borderBottomWidth = '100px';
+                    bearingCone.style.borderLeftWidth = '60px';
+                    bearingCone.style.borderRightWidth = '60px';
+                    conicityInfo.innerHTML = `
+                        <h3>Conicidad K30 (1:30)</h3>
+                        <p>Conicidad más suave. Por cada 30 unidades de longitud, el diámetro cambia 1 unidad. Usada en aplicaciones especiales que requieren menor interferencia.</p>
+                    `;
+                }
+
+                bearingCone.classList.add('active');
+
+                // Add animation effect
+                bearingCone.style.animation = 'pulse 0.5s ease';
+                setTimeout(() => {
+                    bearingCone.style.animation = '';
+                }, 500);
+            });
+        });
+
+        // Temperature simulator
+        const tempSlider = document.getElementById('tempSlider');
+        const tempDisplay = document.getElementById('tempDisplay');
+        const tempEffect = document.getElementById('tempEffect');
+        const animatedBearing = document.getElementById('animatedBearing');
+        const innerRing = document.getElementById('innerRing');
+        const clearanceIndicator = document.getElementById('clearanceIndicator');
+        const clearanceEffect = document.getElementById('clearanceEffect');
+
+        tempSlider.addEventListener('input', (e) => {
+            const temp = parseInt(e.target.value);
+            tempDisplay.textContent = temp + '°C';
+
+            // Calculate clearance reduction based on temperature
+            const tempFactor = (temp - 20) / 180; // Normalize temperature
+            const clearanceReduction = tempFactor * 50; // Max 50% reduction
+
+            // Update visual effects
+            const scale = 1 - (clearanceReduction / 100);
+            const opacity = 0.3 + (tempFactor * 0.4);
+
+            innerRing.style.transform = `translate(-50%, -50%) scale(${scale})`;
+            clearanceIndicator.style.transform = `translate(-50%, -50%) scale(${scale})`;
+            animatedBearing.style.borderColor = `hsl(${120 - tempFactor * 120}, 70%, 50%)`;
+
+            // Update text effects
+            if (temp < 50) {
+                tempEffect.textContent = 'Temperatura baja - Expansión mínima';
+                clearanceEffect.textContent = 'Juego radial: Aumentado';
+                clearanceEffect.style.color = '#4fc3f7';
+            } else if (temp < 100) {
+                tempEffect.textContent = 'Temperatura de operación normal';
+                clearanceEffect.textContent = 'Juego radial: Normal';
+                clearanceEffect.style.color = '#38ef7d';
+            } else if (temp < 150) {
+                tempEffect.textContent = 'Temperatura elevada - Expansión considerable';
+                clearanceEffect.textContent = 'Juego radial: Reducido';
+                clearanceEffect.style.color = '#ffeb3b';
+            } else {
+                tempEffect.textContent = 'Temperatura crítica - Máxima expansión';
+                clearanceEffect.textContent = 'Juego radial: Muy reducido';
+                clearanceEffect.style.color = '#f44336';
+            }
+        });
+
+        // Clearance calculator
+        function calculateClearance() {
+            const diameter = parseInt(document.getElementById('bearingDiameter').value);
+            const clearanceType = document.getElementById('clearanceType').value;
+
+            if (!diameter || diameter < 24 || diameter > 1000) {
+                alert('Por favor ingresa un diámetro válido entre 24 y 1000 mm');
+                return;
+            }
+
+            // Find closest diameter in data
+            let closestData = clearanceData.reduce((prev, curr) => {
+                return Math.abs(curr.diameter - diameter) < Math.abs(prev.diameter - diameter) ? curr : prev;
+            });
+
+            // If exact match not found, interpolate
+            if (closestData.diameter !== diameter) {
+                const smaller = clearanceData.filter(d => d.diameter <= diameter).pop();
+                const larger = clearanceData.find(d => d.diameter >= diameter);
+
+                if (smaller && larger && smaller !== larger) {
+                    const ratio = (diameter - smaller.diameter) / (larger.diameter - smaller.diameter);
+                    closestData = {
+                        diameter: diameter,
+                        c2Min: Math.round(smaller.c2Min + (larger.c2Min - smaller.c2Min) * ratio),
+                        c2Max: Math.round(smaller.c2Max + (larger.c2Max - smaller.c2Max) * ratio),
+                        normalMin: Math.round(smaller.normalMin + (larger.normalMin - smaller.normalMin) * ratio),
+                        normalMax: Math.round(smaller.normalMax + (larger.normalMax - smaller.normalMax) * ratio),
+                        c3Min: Math.round(smaller.c3Min + (larger.c3Min - smaller.c3Min) * ratio),
+                        c3Max: Math.round(smaller.c3Max + (larger.c3Max - smaller.c3Max) * ratio),
+                        c4Min: Math.round(smaller.c4Min + (larger.c4Min - smaller.c4Min) * ratio),
+                        c4Max: Math.round(smaller.c4Max + (larger.c4Max - smaller.c4Max) * ratio)
+                    };
+                }
+            }
+
+            let minValue, maxValue;
+
+            switch (clearanceType) {
+                case 'c2':
+                    minValue = closestData.c2Min;
+                    maxValue = closestData.c2Max;
+                    break;
+                case 'normal':
+                    minValue = closestData.normalMin;
+                    maxValue = closestData.normalMax;
+                    break;
+                case 'c3':
+                    minValue = closestData.c3Min;
+                    maxValue = closestData.c3Max;
+                    break;
+                case 'c4':
+                    minValue = closestData.c4Min;
+                    maxValue = closestData.c4Max;
+                    break;
+                case 'c5':
+                    // Approximate C5 values (typically 25% higher than C4)
+                    minValue = Math.round(closestData.c4Min * 1.25);
+                    maxValue = Math.round(closestData.c4Max * 1.25);
+                    break;
+            }
+
+            const avgValue = Math.round((minValue + maxValue) / 2);
+
+            // Display results with animation
+            document.getElementById('minClearance').textContent = minValue + ' μm';
+            document.getElementById('maxClearance').textContent = maxValue + ' μm';
+            document.getElementById('avgClearance').textContent = avgValue + ' μm';
+
+            document.getElementById('clearanceResults').classList.add('show');
+
+            // Animate result cards
+            const resultCards = document.querySelectorAll('.result-card');
+            resultCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.animation = 'pulse 0.6s ease';
+                    setTimeout(() => {
+                        card.style.animation = '';
+                    }, 600);
+                }, index * 200);
+            });
+
+            // Highlight corresponding row in table
+            highlightTableRow(diameter);
+        }
+
+        // Populate clearance table
+        function populateTable() {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+
+            clearanceData.forEach(data => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${data.diameter}</td>
+                    <td>${data.c2Min}</td>
+                    <td>${data.c2Max}</td>
+                    <td>${data.normalMin}</td>
+                    <td>${data.normalMax}</td>
+                    <td>${data.c3Min}</td>
+                    <td>${data.c3Max}</td>
+                    <td>${data.c4Min}</td>
+                    <td>${data.c4Max}</td>
+                `;
+                row.addEventListener('click', () => {
+                    // Fill calculator with clicked row data
+                    document.getElementById('bearingDiameter').value = data.diameter;
+                    calculateClearance();
+                });
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Table search functionality
+        const tableSearch = document.getElementById('tableSearch');
+        tableSearch.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#tableBody tr');
+
+            rows.forEach(row => {
+                const diameter = row.firstElementChild.textContent;
+                if (diameter.includes(searchTerm)) {
+                    row.style.display = '';
+                    row.style.opacity = '1';
+                } else {
+                    row.style.display = 'none';
+                    row.style.opacity = '0';
+                }
+            });
+        });
+
+        // Highlight table row
+        function highlightTableRow(diameter) {
+            const rows = document.querySelectorAll('#tableBody tr');
+            rows.forEach(row => {
+                row.classList.remove('highlight-row');
+                const rowDiameter = parseInt(row.firstElementChild.textContent);
+                if (rowDiameter === diameter) {
+                    row.classList.add('highlight-row');
+                    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+        }
+
+        // Auto-calculate when inputs change
+        document.getElementById('bearingDiameter').addEventListener('input', () => {
+            const diameter = document.getElementById('bearingDiameter').value;
+            if (diameter && diameter.length >= 2) {
+                setTimeout(calculateClearance, 1000);
+            }
+        });
+
+        document.getElementById('clearanceType').addEventListener('change', () => {
+            const diameter = document.getElementById('bearingDiameter').value;
+            if (diameter) {
+                calculateClearance();
+            }
+        });
+
+        // Initialize components
+        document.addEventListener('DOMContentLoaded', () => {
+            populateTable();
+
+            // Set initial 3D bearing state
+            bearingCone.classList.add('active');
+
+            // Add auto-rotation to 3D bearing
+            setInterval(() => {
+                if (!isDragging) {
+                    currentRotationY += 0.5;
+                    bearing3D.style.transform = `rotateX(${currentRotationX}deg) rotateY(${currentRotationY}deg)`;
+                }
+            }, 50);
+        });
+
+        // Add smooth scroll behavior for better UX
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all animated elements
+        document.querySelectorAll('.bearing-3d-container, .radial-clearance, .clearance-calculator, .clearance-table').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Add keyboard navigation for accessibility
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.target.id === 'bearingDiameter') {
+                calculateClearance();
+            }
+
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                if (document.activeElement.classList.contains('conicity-btn')) {
+                    const buttons = Array.from(conicityBtns);
+                    const currentIndex = buttons.indexOf(document.activeElement);
+                    const newIndex = e.key === 'ArrowLeft' ?
+                        (currentIndex - 1 + buttons.length) % buttons.length :
+                        (currentIndex + 1) % buttons.length;
+
+                    buttons[newIndex].click();
+                    buttons[newIndex].focus();
+                }
+            }
+        });
+
+        // Add touch gestures for mobile 3D interaction
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        bearing3D.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        });
+
+        bearing3D.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touchX = e.touches[0].clientX;
+            const touchY = e.touches[0].clientY;
+
+            const deltaX = touchX - touchStartX;
+            const deltaY = touchY - touchStartY;
+
+            currentRotationY += deltaX * 0.3;
+            currentRotationX -= deltaY * 0.3;
+
+            bearing3D.style.transform = `rotateX(${currentRotationX}deg) rotateY(${currentRotationY}deg)`;
+
+            touchStartX = touchX;
+            touchStartY = touchY;
+        });
+    </script>
+</body>
+
+</html>

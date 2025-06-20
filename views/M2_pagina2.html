@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mantenimiento de Montacargas</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/mod2_pag2.css">
+</head>
+
+<body>
+
+    <div class="nav-floating">
+        <div class="floating-container">
+            <button class="floating-trigger">
+                <svg viewBox="0 0 24 24">
+                    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+                </svg>
+            </button>
+            <div class="floating-menu">
+                <button class="floating-item" onclick="goHome()" title="Página Principal">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                    </svg>
+                </button>
+                <button class="floating-item" onclick="goBack()" title="Retroceder">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- SECCIÓN DEL MONTACARGAS MODIFICADA -->
+        <div class="forklift-section">
+            <h3 class="forklift-title">2.2. Características Técnicas - CAT DP150</h3>
+            <div class="center-content">
+                <!-- Tu imagen del montacargas -->
+                <img src="../assets/images/montacarga-simple.png" alt="Montacargas" class="forklift-image"
+                    loading="eager">
+            </div>
+        </div>
+        <!-- FIN DE LA SECCIÓN MODIFICADA -->
+
+        <div class="specs-section">
+            <h3>Especificaciones Técnicas</h3>
+            <div class="specs-container">
+                <div class="spec-item">
+                    <div class="spec-label">Capacidad de carga</div>
+                    <div class="spec-value highlight">15,000 kg</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Tipo de energía</div>
+                    <div class="spec-value">Diesel</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Tipo de llantas</div>
+                    <div class="spec-value">Neumático</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Peso total</div>
+                    <div class="spec-value">17,960 kg</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Motor</div>
+                    <div class="spec-value">Mitsubishi Fuso 6D16-TL</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Transmisión</div>
+                    <div class="spec-value">Powershift</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Velocidad</div>
+                    <div class="spec-value">
+                        <strong>Cargado:</strong> 12.1 - 18.3 km/h<br>
+                        <strong>Vacío:</strong> 19.5 - 29.5 km/h
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button style="position: absolute !important; bottom: 2rem; right: 2rem;" class="start-button"
+        onclick="goToNextPage()">
+        Continuar
+        <span class="arrow">❯</span>
+    </button>
+    <script src="../assets/js/mod2_pag2.js"></script>
+    <script src="../assets/js/audioPlayer.js"></script>
+    <script>
+        function goToNextPage() {
+            window.location.href = 'M2_pagina3.html';
+        }
+
+        function goHome() {
+            // Cambiar por la URL de tu página principal
+            window.location.href = '../index.html';
+            // O usar: window.location.href = 'index.html';
+        }
+
+        function goBack() {
+            window.location.href = 'M2_pagina1.html';
+        }
+    </script>
+</body>
+
+</html>
